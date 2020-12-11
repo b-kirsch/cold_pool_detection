@@ -1,6 +1,6 @@
-## cold_pool_detection
+# cold_pool_detection
 
-# Description
+## Description
 Algorithm to detect and analyze passages of convective cold pools 
 from time series data of air temperature and rainfall. Cold-pool passages
 are detected from rapid temperature drops (default: -2 K within 20 min) 
@@ -13,21 +13,22 @@ of these periods ('pre','post','all') for any additionally provided variable
 to analyze its characteristics during the cold-pool events. Furthermore, the 
 underlying time series data itself can be written to output for further analyses.
 
-# Required Input 
-    - dtdata: datetime array containing regular time grid (resolution of at 
-              least 10 min is recommended)
+## Usage
+### Required Input 
+* dtdata: datetime array containing regular time grid (resolution of at 
+          least 10 min is recommended)
               
-    - ttdata: numpy array or pandas series of same length as dtdata 
-              containing air temperature data
+* ttdata: numpy array or pandas series of same length as dtdata 
+          containing air temperature data
               
-    - rrdata: numpy array or pandas series of same length as dtdata 
-              containing data of interval-accumulated rainfall amount     
+* rrdata: numpy array or pandas series of same length as dtdata 
+          containing data of interval-accumulated rainfall amount     
               
-# Optional Input      
-    - indata: numpy array or pandas series of same length as dtdata 
-              containing any given variable
+### Optional Input      
+* indata: numpy array or pandas series of same length as dtdata 
+          containing any given variable
               
-# Usage
+### Example
 ```python
     import cp_detection_timeseries as cpdt
     cp = cpdt.cp_detection(dtdata,ttdata,rrdata) 
@@ -43,15 +44,16 @@ underlying time series data itself can be written to output for further analyses
 ```    
 
 
-# Versions
-    - python 3.8.3
-    - numpy 1.18.5
-    - pandas 1.0.5
+## Software Versions
+* python 3.8.3
+* numpy 1.18.5
+* pandas 1.0.5
     
 
-# Contact
-Bastian Kirsch (bastian.kirsch@uni-hamburg.de)
+## Contact
+Bastian Kirsch (bastian.kirsch@uni-hamburg.de) \\
 Meteorologisches Institut, Universität Hamburg, Germany
 
 Last revision:
+
 11 December 2020
