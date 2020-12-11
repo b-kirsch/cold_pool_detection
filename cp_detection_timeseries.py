@@ -39,11 +39,11 @@ class cp_detection:
                  data_avail_all=data_avail_all,
                  warn_avail_cp=True,warn_avail_all=True):
         
-        check_dt   = False
+        # Check if dtdata is a datetime object and contains a regular time grid
+        check_dt   = isinstance(dtdata,pd.DatetimeIndex)
         check_tres = False
         
-        # Check if dtdata is a datetime object and contains a regular time grid
-        try: 
+        if check_dt: 
             dt_freq  = dtdata.inferred_freq 
             check_dt = True
             if dt_freq == None: 
@@ -51,35 +51,31 @@ class cp_detection:
             else:    
                 tres = (dtdata[1]-dtdata[0]).seconds/60 
                 check_tres = True
-        except AttributeError:    
-            print('Time array is no datetime object!')     
+        else:
+            print('dtdata is not a datetime object!')
         
         # Convert ttdata and rrdata into numpy arrays if pd.Series is provided    
         if isinstance(ttdata,pd.Series): ttdata = ttdata.to_numpy(float)
         if isinstance(rrdata,pd.Series): rrdata = rrdata.to_numpy(float)  
         
         # Check if length of provided data arrays is consistent
-        self.ntime = dtdata.shape[0]
+        self.ntime = dtdata.shape[0] if check_dt else -1
         check_len_tt = self._check_data_len(ttdata,'TT')
         check_len_rr = self._check_data_len(rrdata,'RR')
         
-        # Check overall availability of provided data (only warning if failed)
-        self.data_avail_cp  = data_avail_cp
-        self.data_avail_all = data_avail_all
-        self.warn_avail_cp  = warn_avail_cp
-        self.warn_avail_all = warn_avail_all
-        self._check_data_avail(ttdata,self.data_avail_all,self.warn_avail_all,'TT')
-        self._check_data_avail(rrdata,self.data_avail_all,self.warn_avail_all,'RR')
-        
         # Perform cold pool detection if all checks are passed
-        check_all = check_dt & check_tres & check_len_tt & check_len_rr 
-        
-        self.dtdata = dtdata
-        self.ttdata = ttdata
-        self.rrdata = rrdata
-        cp_index    = np.array([])
+        check_all = check_dt & check_tres & check_len_tt & check_len_rr
+        cp_index  = np.array([])
         
         if check_all:
+            # Check overall availability of provided data (only warning if failed)
+            self.data_avail_cp  = data_avail_cp
+            self.data_avail_all = data_avail_all
+            self.warn_avail_cp  = warn_avail_cp
+            self.warn_avail_all = warn_avail_all
+            self._check_data_avail(ttdata,self.data_avail_all,self.warn_avail_all,'TT')
+            self._check_data_avail(rrdata,self.data_avail_all,self.warn_avail_all,'RR')
+            
             ntt        = int(d_time/tres)
             self.npre  = int(time_pre/tres)
             self.npost = int(time_post/tres)
@@ -116,9 +112,12 @@ class cp_detection:
                 # Save time index of cold pool begin
                 cp_index = np.append(cp_index,icp)
                 icp_prev = icp    
-        
+                
+        self.dtdata      = dtdata
+        self.ttdata      = ttdata
+        self.rrdata      = rrdata        
         self.cp_index    = cp_index.astype(int)  
-        self.cp_datetime = dtdata[self.cp_index]
+        self.cp_datetime = dtdata[self.cp_index] if check_dt else self.cp_index
         self.ncp         = len(cp_index)
  
     #Internal functions--------------------------------------------------------
@@ -133,7 +132,11 @@ class cp_detection:
     
     # Check length of data arrays for consistency        
     def _check_data_len(self,indata,varstr):
-        if len(indata) == self.ntime:
+        try:
+            len_indata = indata.shape[0]
+        except AttributeError:
+            len_indata = 0
+        if len_indata == self.ntime:
             return True
         else:
             print(varstr+' data array does not have the same length as datetime array!')
@@ -152,33 +155,36 @@ class cp_detection:
             return False
     
     # Perform different calculations on cold-pool-event data (pd.DataFrame) 
-    def _calc_val(self,indata,funcstr):
+    def _calc_val(self,eventdata,funcstr):
         funcavail = ['median','mean','max','min','sum','first','last']
         if funcstr not in funcavail:
-            print('Function '+funcstr+' not available! Pick one of '+\
+            print('Function '+funcstr+' is not available! Pick one of '+\
                   str(funcavail))
-            return pd.DataFrame(index=self.cp_datetime)
+            return pd.DataFrame()
         
-        if funcstr == 'median': return indata.median()
-        if funcstr == 'mean'  : return indata.mean()
-        if funcstr == 'max'   : return indata.max()
-        if funcstr == 'min'   : return indata.min()
-        if funcstr == 'sum'   : return indata.sum()
-        if funcstr == 'first' : return indata.iloc[0]
-        if funcstr == 'last'  : return indata.iloc[-1]
+        if funcstr == 'median': return eventdata.median()
+        if funcstr == 'mean'  : return eventdata.mean()
+        if funcstr == 'max'   : return eventdata.max()
+        if funcstr == 'min'   : return eventdata.min()
+        if funcstr == 'sum'   : return eventdata.sum()
+        if funcstr == 'first' : return eventdata.iloc[0]
+        if funcstr == 'last'  : return eventdata.iloc[-1]
     
     # Apply given function on data of pre-cold-pool-passage period
     def _pre_val(self,eventdata,funcstr):
+        if eventdata.empty: return eventdata
         slc_pre = self._index_cp(0,'pre')
         return self._calc_val(eventdata.loc[:slc_pre.stop-1],funcstr)
     
     # Apply given function on data of post-cold-pool-passage period
     def _post_val(self,eventdata,funcstr):
+        if eventdata.empty: return eventdata
         slc_post = self._index_cp(0,'post')
         return self._calc_val(eventdata.loc[slc_post.start:],funcstr)
     
     # Apply given function on data of entire cold-pool-event period
     def _all_val(self,eventdata,funcstr):
+        if eventdata.empty: return eventdata
         return self._calc_val(eventdata,funcstr)
     
     # External functions-------------------------------------------------------
@@ -199,19 +205,20 @@ class cp_detection:
     # cold-pool events
     def var_time(self,indata):
         if isinstance(indata,pd.Series): indata = indata.to_numpy(float)
+        check_len = self._check_data_len(indata,'Provided')
+        if not check_len: return pd.DataFrame()
         self._check_data_avail(indata,self.data_avail_all,self.warn_avail_all,
                                'provided')
         event_index = np.arange(-self.npre,self.npost+1)
-        outdata = pd.DataFrame(index=event_index)
-        check_len = self._check_data_len(indata,'Provided')
+
         
-        if check_len:
-            for cp,icp in enumerate(self.cp_index):
-                slc_all = self._index_cp(icp,'all')
-                check_avail = self._check_data_avail(indata[slc_all],
-                                                     self.data_avail_cp,
-                                                     self.warn_avail_cp)
-                outdata[self.cp_datetime[cp]] = indata[slc_all] if check_avail else np.nan
+        outdata = pd.DataFrame(index=event_index)
+        for cp,icp in enumerate(self.cp_index):
+            slc_all = self._index_cp(icp,'all')
+            check_avail = self._check_data_avail(indata[slc_all],
+                                                 self.data_avail_cp,
+                                                 self.warn_avail_cp)
+            outdata[self.cp_datetime[cp]] = indata[slc_all] if check_avail else np.nan
             
         return outdata  
     
@@ -229,9 +236,9 @@ class cp_detection:
     def var_val(self,indata,period,funcstr):
         periods = ['pre','post','all']
         if period not in periods:
-            print('Period '+period+' not available! Pick one of '+\
+            print('Period '+period+' is not available! Pick one of '+\
                   str(periods))
-            return pd.DataFrame(index=self.cp_datetime)
+            return pd.DataFrame()
         
         if period == 'pre': 
             return self._pre_val(self.var_time(indata),funcstr)
