@@ -15,18 +15,16 @@ underlying time series data itself can be written to output for further analyses
 
 ## Usage
 ### Required Input 
-* dtdata: datetime array containing regular time grid (resolution of at 
-          least 10 min is recommended)
-              
-* ttdata: numpy array or pandas series of same length as dtdata 
-          containing air temperature data
-              
-* rrdata: numpy array or pandas series of same length as dtdata 
-          containing data of interval-accumulated rainfall amount     
+* `<dtdata>`: datetime array containing regular time grid (resolution of at 
+              least 10 min is recommended)     
+* `<ttdata>`: numpy array or pandas series of same length as dtdata 
+              containing air temperature data         
+* `<rrdata>`: numpy array or pandas series of same length as dtdata 
+              containing data of interval-accumulated rainfall amount     
               
 ### Optional Input      
-* indata: numpy array or pandas series of same length as dtdata 
-          containing any given variable
+* `<indata>`: numpy array or pandas series of same length as dtdata 
+              containing any given variable
               
 ### Example
 ```python
@@ -38,9 +36,9 @@ underlying time series data itself can be written to output for further analyses
     cp_tt_pert  = cp.tt_pert()                                                           
     cp_tt_time  = cp.tt_time()                   
     cp_pp_pert  = cp.pp_pert(ppdata)
-    cp_any_time = cp.var_time(anydata)
-    cp_any_pert = cp.var_pert(anydata,'median','min')
-    cp_any_val  = cp.var_val(anydata,'pre','max')
+    cp_any_time = cp.var_time(idata)
+    cp_any_pert = cp.var_pert(indata,'median','min')
+    cp_any_val  = cp.var_val(indata,'pre','max')
 ```    
 
 
@@ -51,9 +49,8 @@ underlying time series data itself can be written to output for further analyses
     
 
 ## Contact
-Bastian Kirsch (bastian.kirsch@uni-hamburg.de) \\
+Bastian Kirsch (bastian.kirsch@uni-hamburg.de)
+
 Meteorologisches Institut, Universität Hamburg, Germany
 
-Last revision:
-
-11 December 2020
+Last revision: 11 December 2020
