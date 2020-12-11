@@ -15,16 +15,16 @@ underlying time series data itself can be written to output for further analyses
 
 ## Usage
 ### Required Input 
-* `<dtdata>`: datetime array containing regular time grid (resolution of at 
-              least 10 min is recommended)     
-* `<ttdata>`: numpy array or pandas series of same length as dtdata 
-              containing air temperature data         
-* `<rrdata>`: numpy array or pandas series of same length as dtdata 
-              containing data of interval-accumulated rainfall amount     
+* `dtdata`: datetime array containing regular time grid (resolution of at 
+            least 10 min is recommended)     
+* `ttdata`: numpy array or pandas series of same length as dtdata 
+            containing air temperature data         
+* `rrdata`: numpy array or pandas series of same length as dtdata 
+            containing data of interval-accumulated rainfall amount     
               
 ### Optional Input      
-* `<indata>`: numpy array or pandas series of same length as dtdata 
-              containing any given variable
+* `indata`: numpy array or pandas series of same length as dtdata 
+            containing any given variable
               
 ### Example
 ```python
@@ -50,7 +50,6 @@ underlying time series data itself can be written to output for further analyses
 
 ## Contact
 Bastian Kirsch (bastian.kirsch@uni-hamburg.de)
-
 Meteorologisches Institut, Universität Hamburg, Germany
 
 Last revision: 11 December 2020
