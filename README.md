@@ -17,28 +17,28 @@ underlying time series data itself can be written to output for further analyses
 ### Required Input 
 * `dtdata`: datetime array containing regular time grid (resolution of at 
             least 10 min is recommended)     
-* `ttdata`: numpy array or pandas series of same length as dtdata 
+* `ttdata`: numpy array or pandas series of same length as `dtdata` 
             containing air temperature data         
-* `rrdata`: numpy array or pandas series of same length as dtdata 
+* `rrdata`: numpy array or pandas series of same length as `dtdata` 
             containing data of interval-accumulated rainfall amount     
               
 ### Optional Input      
-* `indata`: numpy array or pandas series of same length as dtdata 
+* `indata`: numpy array or pandas series of same length as `dtdata`
             containing any given variable
               
 ### Example
 ```python
     import cp_detection_timeseries as cpdt
-    cp = cpdt.cp_detection(dtdata,ttdata,rrdata) 
-    cp_number   = cp.number()                    
-    cp_times    = cp.datetimes()                
-    cp_inidces  = cp.indices()                   
-    cp_tt_pert  = cp.tt_pert()                                                           
-    cp_tt_time  = cp.tt_time()                   
-    cp_pp_pert  = cp.pp_pert(ppdata)
-    cp_any_time = cp.var_time(idata)
-    cp_any_pert = cp.var_pert(indata,'median','min')
-    cp_any_val  = cp.var_val(indata,'pre','max')
+    cp = cpdt.cp_detection(dtdata,ttdata,rrdata)     # Perform cold-pool detection
+    cp_number   = cp.number()                        # Integer number of detected cold-pool events
+    cp_times    = cp.datetimes()                     # Datetime array of cold-pool passage times
+    cp_inidces  = cp.indices()                       # Numpy array of cold-pool passage time indices 
+    cp_tt_pert  = cp.tt_pert()                       # Pandas dataframe of temperature perturbations indexed by corresponding datetimes                                   
+    cp_tt_time  = cp.tt_time()                       # Pandas dataframe of temperature time series during events indexed by timesteps relative to passage time
+    cp_pp_pert  = cp.pp_pert(ppdata)                 # Pandas dataframe of air pressure perturbations  
+    cp_any_time = cp.var_time(indata)                # Pandas dataframe of time series of any variable during events
+    cp_any_pert = cp.var_pert(indata,'median','min') # Pandas dataframe of perturbations of any variable
+    cp_any_val  = cp.var_val(indata,'pre','max')     # Pandas dataframe of characteristic value of any variable
 ```    
 
 
