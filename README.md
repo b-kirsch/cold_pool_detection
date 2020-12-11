@@ -49,7 +49,7 @@ underlying time series data itself can be written to output for further analyses
     
 
 ## Contact
-Bastian Kirsch (bastian.kirsch@uni-hamburg.de)
+Bastian Kirsch (bastian.kirsch@uni-hamburg.de) <br>
 Meteorologisches Institut, Universität Hamburg, Germany
 
 Last revision: 11 December 2020
