@@ -9,7 +9,7 @@ Bastian Kirsch (bastian.kirsch@uni-hamburg.de)
 Meteorologisches Institut, Universität Hamburg, Germany
 
 Last revision:
-11 December 2020
+14 December 2020
 """
 
 import numpy as np
@@ -33,7 +33,7 @@ data_avail_all = 0.9   # Warning threshold for relative availability of all data
 class cp_detection:
     
     def __init__(self,dtdata,ttdata,rrdata,
-                 d_tt=d_tt,d_time=d_time,tpre=time_pre,
+                 d_tt=d_tt,d_time=d_time,time_pre=time_pre,
                  time_post=time_post,d_tt_p=d_tt_p,
                  data_avail_cp=data_avail_cp,
                  data_avail_all=data_avail_all,
@@ -52,7 +52,7 @@ class cp_detection:
                 tres = (dtdata[1]-dtdata[0]).seconds/60 
                 check_tres = True
         else:
-            print('dtdata is not a datetime object!')
+            print('dtdata is not a DatetimeIndex object!')
         
         # Convert ttdata and rrdata into numpy arrays if pd.Series is provided    
         if isinstance(ttdata,pd.Series): ttdata = ttdata.to_numpy(float)
@@ -106,10 +106,10 @@ class cp_detection:
                                                         self.data_avail_cp,False)
                 if not check_avail_tt or not check_avail_rr: continue
             
-                # Filter out events without rainfall
+                # Filter out events without rainfall after cold-pool passage
                 if np.sum(rrdata[slc_post]) == 0: continue
                 
-                # Save time index of cold pool begin
+                # Save time index of cold-pool begin
                 cp_index = np.append(cp_index,icp)
                 icp_prev = icp    
                 
@@ -120,7 +120,8 @@ class cp_detection:
         self.cp_datetime = dtdata[self.cp_index] if check_dt else self.cp_index
         self.ncp         = len(cp_index)
  
-    #Internal functions--------------------------------------------------------
+    #--------------------------------------------------------------------------
+    #Internal functions
     
     # Return index slices of defined cold-pool event periods
     def _index_cp(self,index_cp,period):
@@ -187,7 +188,8 @@ class cp_detection:
         if eventdata.empty: return eventdata
         return self._calc_val(eventdata,funcstr)
     
-    # External functions-------------------------------------------------------
+    #--------------------------------------------------------------------------
+    # External functions
     
     # Return number of detected cold-pool events
     def number(self):
