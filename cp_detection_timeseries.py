@@ -26,7 +26,7 @@ d_tt_p         = -0.5  # Threshold for initial temperature drop (K) defining
 
 data_avail_cp  = 1.0   # Minimum relative data availability required during a
                        # cold-pool event to be considered as valid (concerning
-                       # both detecting and calculation of perturbation)
+                       # both detection and calculation of perturbation)
 data_avail_all = 0.9   # Warning threshold for relative availability of all data
 
 
@@ -121,9 +121,9 @@ class cp_detection:
         self.ncp         = len(cp_index)
  
     #--------------------------------------------------------------------------
-    #Internal functions
+    #Internal methods
     
-    # Return index slices of defined cold-pool event periods
+    # Returns index slices of defined cold-pool event periods
     def _index_cp(self,index_cp,period):
         ipre  = index_cp-self.npre
         ipost = index_cp+self.npost+1
@@ -131,7 +131,7 @@ class cp_detection:
         if period == 'post': return slice(index_cp+1,ipost)
         if period == 'all' : return slice(ipre,ipost)
     
-    # Check length of data arrays for consistency        
+    # Checks length of data arrays for consistency        
     def _check_data_len(self,indata,varstr):
         try:
             len_indata = indata.shape[0]
@@ -143,7 +143,7 @@ class cp_detection:
             print(varstr+' data array does not have the same length as datetime array!')
             return False  
     
-    # Check data availability
+    # Checks data availability
     def _check_data_avail(self,indata,threshold,warn,warnstr='event'):
         data_avail = np.sum(np.isfinite(indata))/indata.shape[0]
         if data_avail >= threshold: 
@@ -155,7 +155,7 @@ class cp_detection:
                       ' ({:2.1f} %) ***'.format(data_avail*100))
             return False
     
-    # Perform different calculations on cold-pool-event data (pd.DataFrame) 
+    # Performs different calculations on cold-pool-event data (pd.DataFrame) 
     def _calc_val(self,eventdata,funcstr):
         funcavail = ['median','mean','max','min','sum','first','last']
         if funcstr not in funcavail:
@@ -171,39 +171,39 @@ class cp_detection:
         if funcstr == 'first' : return eventdata.iloc[0]
         if funcstr == 'last'  : return eventdata.iloc[-1]
     
-    # Apply given function on data of pre-cold-pool-passage period
+    # Applies given function on data of pre-cold-pool-passage period
     def _pre_val(self,eventdata,funcstr):
         if eventdata.empty: return eventdata
         slc_pre = self._index_cp(0,'pre')
         return self._calc_val(eventdata.loc[:slc_pre.stop-1],funcstr)
     
-    # Apply given function on data of post-cold-pool-passage period
+    # Applies given function on data of post-cold-pool-passage period
     def _post_val(self,eventdata,funcstr):
         if eventdata.empty: return eventdata
         slc_post = self._index_cp(0,'post')
         return self._calc_val(eventdata.loc[slc_post.start:],funcstr)
     
-    # Apply given function on data of entire cold-pool-event period
+    # Applies given function on data of entire cold-pool-event period
     def _all_val(self,eventdata,funcstr):
         if eventdata.empty: return eventdata
         return self._calc_val(eventdata,funcstr)
     
     #--------------------------------------------------------------------------
-    # External functions
+    # External methods
     
-    # Return number of detected cold-pool events
+    # Returns number of detected cold-pool events
     def number(self):
         return self.ncp
     
-    # Return indices of detected cold-pool events
+    # Returns array indices of passage times
     def indices(self):
         return self.cp_index
     
-    # Return datetimes of detected cold-pool events
+    # Returns Datetime indices of passage times
     def datetimes(self):
         return self.cp_datetime
     
-    # Return time series data of provided parameter during detected 
+    # Returns time series data of provided parameter during 
     # cold-pool events
     def var_time(self,indata):
         if isinstance(indata,pd.Series): indata = indata.to_numpy(float)
@@ -224,7 +224,7 @@ class cp_detection:
             
         return outdata  
     
-    # Return perturbations of provided parameter during detected 
+    # Returns perturbations of provided parameter during
     # cold-pool events given by the differences between the values
     # calculated for the pre and post-cold-pool-passage periods
     # according to the provided function strings
@@ -233,7 +233,7 @@ class cp_detection:
         post_val = self._post_val(self.var_time(indata),postfunc)
         return post_val - pre_val
     
-    # Return certian values of provided parameter during detected 
+    # Returns certian values of provided parameter during
     # cold-pool events for given periods and function string
     def var_val(self,indata,period,funcstr):
         periods = ['pre','post','all']
@@ -249,35 +249,35 @@ class cp_detection:
         if period == 'all': 
             return self._all_val(self.var_time(indata),funcstr)
         
-    # Return temperature perturbations during detected cold-pool events
+    # Returns temperature perturbations during cold-pool events
     def tt_pert(self):
         return self.var_pert(self.ttdata,prefunc='median',postfunc='min')
     
-    # Return median temperature values during pre-cold-pool-passage periods
+    # Returns pre-passage median temperature values
     def tt_pre(self):
         return self._pre_val(self.var_time(self.ttdata),'median')
     
-    # Return temperature time series data during detected cold-pool events
+    # Returns temperature time series data during cold-pool events
     def tt_time(self):
         return self.var_time(self.ttdata)
     
-    # Return rainfall accumulations during detected cold-pool events
+    # Returns event-accumulated rainfall amounts
     def rr_sum(self):
         return self._all_val(self.var_time(self.rrdata),'sum')
     
-    # Return maximum rainfall rate during detected cold-pool events
+    # Returns maximum rainfall values
     def rr_max(self):
         return self._all_val(self.var_time(self.rrdata),'max')
     
-    # Return rainfall time series data during detected cold-pool events
+    # Returns rainfall time series data during cold-pool events
     def rr_time(self):
         return self.var_time(self.rrdata)
     
-    # Return air pressure perturbations during detected cold-pool events
+    # Returns air pressure perturbations
     def pp_pert(self,ppdata):
         return self.var_pert(ppdata,prefunc='median',postfunc='max')
     
-    # Return wind speed perturbations during detected cold-pool events
+    # Returns wind speed perturbations
     def ff_pert(self,ffdata):
         return self.var_pert(ffdata,prefunc='median',postfunc='max')
     
