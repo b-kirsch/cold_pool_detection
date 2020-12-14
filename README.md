@@ -3,10 +3,9 @@
 ## Description
 Algorithm to detect and analyze passages of convective cold pools 
 from time series data of air temperature and rainfall. Cold-pool passages
-are detected from rapid temperature drops (default: -2 K within 20 min) 
-associated with non-zero rainfall. A cold-pool event is defined as a
-time period prior to the time of detected cold-pool passage
-and after it (default: 30 and 60 min). Characteristic values within these pre-
+are detected from rapid temperature drops associated with non-zero rainfall. 
+A cold-pool event is defined as a time period prior to the time of detected 
+cold-pool passage and after it. Characteristic values within these pre-
 and post-passage periods are used to calculate the perturbation strength
 for given parameters. The characteristics of any additionally provided 
 variables during one or both of these periods of the cold-pool events 
@@ -17,14 +16,24 @@ analyses.
 
 ## Usage
 ### Required Input 
-* `dtdata`: pandas DatetimeIndex array with a regular time grid (resolution of 10 min or smaller is recommended)     
-* `ttdata`: numpy array or pandas series of same length as `dtdata` containing air temperature data (in °C or K)      
-* `rrdata`: numpy array or pandas series of same length as `dtdata` containing data of rainfall amount (not intensity)     
-              
+* `dtdata` (DatetimeIndex): Time data with regular grid (resolution of 10 min or smaller is recommended)     
+* `ttdata` (1-d array or pandas.Series): Air temperature data (in °C or K) of same length as `dtdata`     
+* `rrdata` (1-d array or pandas.Series): Rainfall amount data of same length as `dtdata`   
+            
+### Parameters
+* `d_tt` (float): Threshold for temperature drop in K (*default: -2*)
+* `d_time` (integer): Time interval of temperature drop in min (*default: 20*)
+* `time_pre` (integer): Length of pre-passage time period in min (*default: 30*)
+* `time_post` (integer): Length of post-passage time period in min (*default: 60*)
+* `d_tt_p` (float): Threshold for initial temperature drop in K defining time of cold-pool passage (*default: -0.5*)
+* `data_avail_cp` (float): Minimum relative fraction of data availability required during a cold-pool event to be considered as valid, concerning both detection and calculation of perturbations (*default: 1.0*)
+* `data_avail_all` (float): Relative fraction of data availability for input data below which a warning is issued (*default: 0.9*)
+* `warn_avail_cp` (bool): Indicates if a warning is issued when a perturbation is not calculated due to a too low event-specific data availability (*default: True*)
+* `warn_avail_all` (bool): Indicates if a warning is issued for a too low data availability of input data (*default: True*)
+
 ### Optional Input      
-* `indata`: numpy array or pandas series of same length as `dtdata`
-            containing any given variable
-              
+* `indata` (1-d array or pandas.Series): Any given variable of same length as `dtdata`
+            
 ### Example
 ```python
     import cp_detection_timeseries as cpdt
