@@ -4,12 +4,12 @@
 Algorithm to detect and analyze passages of convective cold pools 
 from time series data of air temperature and rainfall. Cold-pool passages
 are detected from rapid temperature drops associated with non-zero rainfall. 
-A cold-pool event is defined as a time period prior to the time of detected 
-cold-pool passage and after it. Characteristic values within these pre-
+A cold-pool event is defined by time periods prior to and after the time of 
+detected cold-pool passage. Characteristic values within these pre-
 and post-passage periods are used to calculate the perturbation strength
 for given parameters. The characteristics of any additionally provided 
 variables during one or both of these periods of the cold-pool events 
-can be analyzed by applying typcial operations to these data. Furthermore, the 
+can be analyzed by applying pre-defined operations to these data. Furthermore, the 
 underlying time series data itself can be written to output for further 
 analyses.
 
@@ -19,18 +19,18 @@ analyses.
 Performs the cold-pool detection (instance method)
 #### Parameters (required):
 * `dtdata` (DatetimeIndex): Time data with regular grid (resolution of 10 min or smaller is recommended)     
-* `ttdata` (1-d array or pandas.Series): Air temperature data of same length as `dtdata`     
+* `ttdata` (1-d array or pandas.Series): Temperature data of same length as `dtdata`     
 * `rrdata` (1-d array or pandas.Series): Rainfall amount data of same length as `dtdata`            
 #### Parameters (optional):
-* `d_tt` (float): Threshold for temperature drop in K (*default: -2*)
-* `d_time` (integer): Time interval of temperature drop in min (*default: 20*)
-* `time_pre` (integer): Length of pre-passage time period in min (*default: 30*)
-* `time_post` (integer): Length of post-passage time period in min (*default: 60*)
-* `d_tt_p` (float): Threshold for initial temperature drop in K defining time of cold-pool passage (*default: -0.5*)
-* `data_avail_cp` (float): Minimum relative fraction of data availability required during a cold-pool event to be considered as valid, concerning both detection and calculation of perturbations (*default: 1.0*)
-* `data_avail_all` (float): Relative fraction of data availability for input data below which a warning is issued (*default: 0.9*)
-* `warn_avail_cp` (bool): Indicates if a warning is issued when a perturbation is not calculated due to a too low event-specific data availability (*default: True*)
-* `warn_avail_all` (bool): Indicates if a warning is issued for a too low data availability of input data (*default: True*)
+* `d_tt` (float): Threshold for temperature drop in K (default: -2)
+* `d_time` (integer): Time interval of temperature drop in min (default: 20)
+* `time_pre` (integer): Length of pre-passage time period in min (default: 30)
+* `time_post` (integer): Length of post-passage time period in min (default: 60)
+* `d_tt_p` (float): Threshold for initial temperature drop in K defining time of cold-pool passage (default: -0.5)
+* `data_avail_cp` (float): Minimum relative fraction of data availability required during a cold-pool event to be considered as valid, concerning both detection and calculation of perturbations (default: 1.0)
+* `data_avail_all` (float): Relative fraction of data availability for input data below which a warning is issued (default: 0.9)
+* `warn_avail_cp` (bool): Indicates if a warning is issued when a perturbation is not calculated due to a too low event-specific data availability (default: *True*)
+* `warn_avail_all` (bool): Indicates if a warning is issued for a too low data availability of input data (default: *True*)
 
 ### number
 Returns number of detected cold-pool events 
@@ -58,7 +58,7 @@ Returns pandas.DataFrame of pre-passage median temperature values
 *None*
 
 ### tt_time
-Returns pandas.DataFrame of temperature time series during the cold-pool events
+Returns pandas.DataFrame of temperature time series during cold-pool events
 #### Parameters 
 *None*
 
@@ -68,12 +68,12 @@ Returns pandas.DataFrame of event-accumulated rainfall amounts
 *None*
 
 ### rr_max
-Returns pandas.DataFrame of event-maximum rainfall amount values
+Returns pandas.DataFrame of maximum rainfall values
 #### Parameters 
 *None*
 
 ### rr_time
-Returns pandas.DataFrame of rainfall time series during the cold-pool events
+Returns pandas.DataFrame of rainfall time series during cold-pool events
 #### Parameters 
 *None*
 
