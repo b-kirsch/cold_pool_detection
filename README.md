@@ -111,15 +111,14 @@ Returns pandas.DataFrame of time series of given variable during the cold-pool e
 ```python
     import cp_detection_timeseries as cpdt
     cp = cpdt.cp_detection(dtdata,ttdata,rrdata)     # Perform cold-pool detection
-    cp_number   = cp.number()                        # Integer number of detected cold-pool events
-    cp_times    = cp.datetimes()                     # Datetime array of cold-pool passage times
-    cp_indices  = cp.indices()                       # Numpy array of cold-pool passage time indices 
-    cp_tt_pert  = cp.tt_pert()                       # Pandas dataframe of temperature perturbations indexed by corresponding datetimes                                   
-    cp_tt_time  = cp.tt_time()                       # Pandas dataframe of temperature time series during events indexed by timesteps relative to passage time
-    cp_pp_pert  = cp.pp_pert(ppdata)                 # Pandas dataframe of air pressure perturbations  
-    cp_any_time = cp.var_time(indata)                # Pandas dataframe of time series of any variable during events
-    cp_any_pert = cp.var_pert(indata,'median','min') # Pandas dataframe of perturbations of any variable
-    cp_any_val  = cp.var_val(indata,'pre','max')     # Pandas dataframe of characteristic value of any variable
+    cp_number   = cp.number()                        
+    cp_times    = cp.datetimes()                                         
+    cp_tt_pert  = cp.tt_pert()                                                        
+    cp_tt_time  = cp.tt_time()                       
+    cp_pp_pert  = cp.pp_pert(ppdata)                
+    cp_any_time = cp.var_time(indata)                
+    cp_any_pert = cp.var_pert(indata,'median','min')
+    cp_any_val  = cp.var_val(indata,'pre','max')
 ```    
 
 
