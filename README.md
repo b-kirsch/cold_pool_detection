@@ -102,7 +102,7 @@ Returns pandas.DataFrame of defined values of given variable
 * `funcstr` (string): Operation to be applied on data (available operations: *median, mean, max, min, sum, first, last*)
 
 ### var_time
-Returns pandas.DataFrame of time series of given variable during the cold-pool events
+Returns pandas.DataFrame of time series of given variable during cold-pool events
 #### Parameters (required)
 * `indata` (1-d array or pandas.Series): Data of variable of same length as `dtdata`  
 
@@ -110,15 +110,15 @@ Returns pandas.DataFrame of time series of given variable during the cold-pool e
 ## Example
 ```python
     import cp_detection_timeseries as cpdt
-    cp = cpdt.cp_detection(dtdata,ttdata,rrdata)     # Perform cold-pool detection
+    cp = cpdt.cp_detection(dtdata,ttdata,rrdata)  # Perform cold-pool detection
     cp_number   = cp.number()                        
     cp_times    = cp.datetimes()                                         
     cp_tt_pert  = cp.tt_pert()                                                        
     cp_tt_time  = cp.tt_time()                       
-    cp_pp_pert  = cp.pp_pert(ppdata)                
-    cp_any_time = cp.var_time(indata)                
+    cp_pp_pert  = cp.pp_pert(ppdata)                               
     cp_any_pert = cp.var_pert(indata,'median','min')
     cp_any_val  = cp.var_val(indata,'pre','max')
+    cp_any_time = cp.var_time(indata) 
 ```    
 
 
