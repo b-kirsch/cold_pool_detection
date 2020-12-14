@@ -1,5 +1,7 @@
 # cold_pool_detection
 
+[![DOI](https://zenodo.org/badge/320529715.svg)](https://zenodo.org/badge/latestdoi/320529715)
+
 ## Description
 Algorithm to detect and analyze passages of convective cold pools 
 from time series data of air temperature and rainfall. Cold-pool passages
