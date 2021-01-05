@@ -9,7 +9,7 @@ Bastian Kirsch (bastian.kirsch@uni-hamburg.de)
 Meteorologisches Institut, Universität Hamburg, Germany
 
 Last revision:
-14 December 2020
+5 January 2021
 """
 
 import numpy as np
@@ -76,14 +76,28 @@ class cp_detection:
             self._check_data_avail(ttdata,self.data_avail_all,self.warn_avail_all,'TT')
             self._check_data_avail(rrdata,self.data_avail_all,self.warn_avail_all,'RR')
             
-            ntt        = int(d_time/tres)
-            self.npre  = int(time_pre/tres)
-            self.npost = int(time_post/tres)
-            icp_prev   = -99999
+            # Check if temporal resolution is compatible with detection parameters
+            ntt   = int(d_time/tres)
+            npre  = int(time_pre/tres)
+            npost = int(time_post/tres)        
+            
+            if ntt <= 0:
+                print('Temporal resolution of data is too low for given d_time parameter!')
+            if npre <= 0:
+                print('Temporal resolution of data is too low for given time_pre parameter!')
+            if npost <= 0:
+                print('Temporal resolution of data is too low for given time_post parameter!')    
             
             # Search for temperature drops of d_tt K within ttt minutes
-            with np.errstate(invalid='ignore'):
-                t_ttlim = np.where((ttdata[ntt:]-ttdata[:-ntt]) <= d_tt)[0]
+            if (ntt > 0) & (npre > 0) & (npost > 0):
+                with np.errstate(invalid='ignore'):
+                    t_ttlim = np.where((ttdata[ntt:]-ttdata[:-ntt]) <= d_tt)[0]
+            else:
+                t_ttlim = []
+            
+            self.npre  = npre
+            self.npost = npost
+            icp_prev   = -99999
             
             for t in t_ttlim:   
                 # Filter out cold pool less than time_post minutes after 
@@ -140,7 +154,8 @@ class cp_detection:
         if len_indata == self.ntime:
             return True
         else:
-            print(varstr+' data array does not have the same length as datetime array!')
+            if self.ntime != -1:
+                print(varstr+' data array does not have the same length as datetime array!')
             return False  
     
     # Checks data availability
