@@ -15,6 +15,8 @@ can be analyzed by applying pre-defined operations to these data. Furthermore, t
 underlying time series data itself can be written to output for further 
 analyses.
 
+Further description and usage of the algorithm can be found in Kirsch et. al. (2021).
+
 ## Usage
 
 ### cp_detection
@@ -128,10 +130,13 @@ Returns pandas.DataFrame of time series of given variable during cold-pool event
 * python 3.8.3
 * numpy 1.18.5
 * pandas 1.0.5
+
+## Literature
+Kirsch, B., F. Ament and C. Hohenegger (2021): Convective cold pools in long-term boundary layer mast observations. Monthly Weather Review, 149, 811-820. https://doi.org/10.1175/MWR-D-20-0197.1
     
 
 ## Contact
 Bastian Kirsch (bastian.kirsch@uni-hamburg.de) <br>
 Meteorologisches Institut, Universität Hamburg, Germany
 
-Last revision: 14 December 2020
+Last revision: 5 March 2021
