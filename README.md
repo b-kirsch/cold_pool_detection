@@ -15,7 +15,7 @@ can be analyzed by applying pre-defined operations to these data. Furthermore, t
 underlying time series data itself can be written to output for further 
 analyses.
 
-Further description and usage of the algorithm can be found in Kirsch et. al. (2021).
+Further description and usage of the algorithm can be found in Kirsch et al. (2021).
 
 ## Usage
 
